@@ -1,11 +1,15 @@
 package com.jwtdemo
 
+import com.auth0.jwt.algorithms.Algorithm
 import com.jwtdemo.data.model.User
 import com.jwtdemo.data.user.MongoUserDataSource
 import com.jwtdemo.plugins.configureMonitoring
 import com.jwtdemo.plugins.configureRouting
 import com.jwtdemo.plugins.configureSecurity
 import com.jwtdemo.plugins.configureSerialization
+import com.jwtdemo.security.hashing.SHA256HashingService
+import com.jwtdemo.security.token.JwtTokenService
+import com.jwtdemo.security.token.TokenConfig
 import io.ktor.server.application.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,11 +30,19 @@ fun Application.module() {
         .getDatabase(dbName)
 
     val userDataSource = MongoUserDataSource(db)
+    val tokenService = JwtTokenService()
+    val tokenConfig = TokenConfig(
+        issuer = environment.config.property("jwt.issuer").getString(),
+        audience = environment.config.property("jwt.audience").getString(),
+        secretKey = System.getenv("JWT_SECRET"),
+        expiresIn = 365L * 1000L * 60 * 60 * 24,
+    )
+    val hashingAlgorithm = SHA256HashingService()
 
 
 
     configureSerialization()
     configureMonitoring()
-    configureSecurity()
+    configureSecurity(tokenConfig)
     configureRouting()
 }
