@@ -13,6 +13,7 @@ import com.jwtdemo.security.token.TokenService
 import com.typesafe.config.ConfigException.Null
 import io.ktor.http.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -103,6 +104,17 @@ fun Route.authenticate(){
     authenticate {
         get("authenticate") {
             call.respond(HttpStatusCode.OK)
+        }
+    }
+}
+
+fun Route.getSecretInfo(){
+    authenticate {
+        get("secret"){
+            val principle = call.principal<JWTPrincipal>()
+            val userId = principle?.getClaim("userId", String::class)
+            call.respondText("Secret info $userId", status = HttpStatusCode.OK)
+
         }
     }
 }
