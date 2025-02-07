@@ -1,5 +1,6 @@
 package com.jwtdemo
 
+import com.jwtdemo.authenticate
 import com.jwtdemo.data.model.User
 import com.jwtdemo.data.requests.AuthRequest
 import com.jwtdemo.data.requests.AuthResponse
@@ -11,6 +12,7 @@ import com.jwtdemo.security.token.TokenConfig
 import com.jwtdemo.security.token.TokenService
 import com.typesafe.config.ConfigException.Null
 import io.ktor.http.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -94,6 +96,14 @@ fun Route.signIn(
             status = HttpStatusCode.OK,
             message = AuthResponse(token)
         )
+    }
+}
+
+fun Route.authenticate(){
+    authenticate {
+        get("authenticate") {
+            call.respond(HttpStatusCode.OK)
+        }
     }
 }
 
