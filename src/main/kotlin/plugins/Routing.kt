@@ -19,6 +19,9 @@ fun Application.configureRouting(
     tokenConfig: TokenConfig
 ) {
     routing {
+        get("/") {
+            call.respondText("Hello World!")
+        }
         signIn(userDataSource,hashingService,tokenService,tokenConfig)
         signUp(hashingService,userDataSource)
         authenticate()

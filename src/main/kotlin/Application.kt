@@ -35,14 +35,15 @@ fun Application.module() {
         issuer = environment.config.property("jwt.issuer").getString(),
         audience = environment.config.property("jwt.audience").getString(),
         secretKey = System.getenv("JWT_SECRET"),
-        expiresIn = 365L * 1000L * 60 * 60 * 24,
+        expiresIn = 365L * 1000L * 60L * 60L * 24L,
     )
-    val hashingAlgorithm = SHA256HashingService()
+    val hashingService = SHA256HashingService()
 
 
 
     configureSerialization()
     configureMonitoring()
     configureSecurity(tokenConfig)
-    configureRouting()
+    configureRouting(userDataSource, hashingService , tokenService , tokenConfig)
+
 }
